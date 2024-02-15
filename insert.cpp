@@ -66,22 +66,22 @@ int main(int argc, char *argv[])
     std::cout << "Blocks: " << b << std::endl;
 
     std::string kc = "Insert";
-    adapter.resetTime(kc);
 
     for(int ib=0; ib<b; ib++){
-        adapter.insert(r, c);
+        adapter.insert(r, c, kc);
     }
 
-    double res = adapter.getElapsedTime(kc);
+    // double res = adapter.getElapsedTime(kc);
+    double absres = adapter.getAbsoluteTime(kc);
     
     std::ofstream of(output_file, std::ios_base::app);
-    of << std::setw(8) << c << "|" << std::setw(8) << r << "|" << std::setw(8) << b << "|" << std::setw(15) << res << "|" << std::endl;
+    of << "insert" << std::setw(8) << c << "c|" << std::setw(8) << r << "r|" << std::setw(8) << b << "b|" << std::setw(15) << absres << "s|" << std::endl;
     of.close();
 
 
 
 
-    adapter.dropTable();
+    // adapter.dropTable();
 
     return 0;
 }

@@ -31,15 +31,17 @@ public:
 
 	void createTable();
 
-	void insert(const int rows, int cols);
+	void insert(const int rows, int cols, const std::string& desc);
 
-	void select();
+	void select(const int tab_count, const int limit, const int offset, const std::string& desc);
 
 	void dropTable();
 
 	void resetTime(const std::string& desc);
 
 	double getElapsedTime(const std::string& desc);
+
+	double getAbsoluteTime(const std::string& desc);
 
 private:
 	std::string table_;
@@ -54,5 +56,6 @@ private:
 	// time_type start;
 	// time_type end;
 	std::map<std::string, time_type> time_storage;
+	std::map<std::string, double> time_inside;
 
 };

@@ -33,11 +33,11 @@ int main()
     adapter.createTable();
 
 
-    adapter.insert(10, 20);
-    adapter.insert(10, 20);
-    adapter.insert(10, 20);
-    adapter.insert(10, 20);
-    adapter.insert(10, 20);
+    adapter.insert(10, 20, "select");
+    adapter.insert(10, 20, "select");
+    adapter.insert(10, 20, "select");
+    adapter.insert(10, 20, "select");
+    adapter.insert(10, 20, "select");
 
     adapter.select();
 
