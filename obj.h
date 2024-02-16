@@ -25,6 +25,7 @@ public:
 		options_.SetUser(user_);
 		options_.SetPassword(pass_);
 		client = new Client(options_);
+		last_time = std::time(0);
 	}
 
 	void setTableName(const std::string &full_table_name);
@@ -49,6 +50,7 @@ private:
 	const std::string user_;
 	const std::string pass_;
 	struct ClientOptions options_;
+	time_t last_time;
 	// options.SetHost(host_);
     // options.SetUser(user_);
     // options.SetPassword(pass_);

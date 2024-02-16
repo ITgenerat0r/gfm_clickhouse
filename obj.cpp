@@ -60,24 +60,30 @@ void Adapter::insert(const int rows, int cols, const std::string& desc){
   auto fl = std::make_shared<ColumnFloat64>();
   auto date = std::make_shared<ColumnDateTime>();
   const int64_t c = 4'987'654'321'987'654'321;
-  time_t last_time = std::time(0);
+  
   int id = 0;
   for (int i = 0; i<rows; ++i){
-      time_t now = std::time(0);
-      date->Append(now);
-      if(now == last_time){
-        id++;
-      } else {
-        id = 0;
-      }
-      fid->Append(id);
+      date->Append(last_time++);
+      std::tm* now = std::localtime(&last_time-1);
+      // std::cout << "added  " << (now->tm_year + 1900) << '-' 
+      //    << (now->tm_mon + 1) << '-'
+      //    <<  now->tm_mday << " "
+      //    << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec << std::endl;
+      // time_t now = std::time(0);
+      // date->Append(now);
+      // if(now == last_time){
+      //   id++;
+      // } else {
+      //   id = 0;
+      // }
+      // fid->Append(id);
       fl->Append(c);
   }
 
   block.AppendColumn("dt", date);
-  block.AppendColumn("f1"  , fid);
+  // block.AppendColumn("f1"  , fid);
   if (cols > 50) cols = 50;
-  for (int i = 2; i <= cols; i++){
+  for (int i = 1; i <= cols; i++){
     std::stringstream ss;
     ss << i;
     std::string field = "f"+ss.str();
@@ -102,27 +108,31 @@ void Adapter::select(const int tab_count, const int limit, const int offset, con
       tabs += ", f" + std::to_string(it);
     }
 
-    resetTime(desc);
     std::string querys = "SELECT " + tabs + " FROM " + table_ + " LIMIT " + std::to_string(limit) + " OFFSET " + std::to_string(offset * limit);
-    std::cout << "Query: " << querys << std::endl;
-    client->Select(querys, [] (const Block& block)
+    resetTime(desc);
+    // std::cout << "Query: " << querys << std::endl;
+    client->Select(querys, [&] (const Block& block)
         {
-            std::cout << "block(" << block.GetRowCount() << ", " << block.GetColumnCount() << ")" << std::endl;
-            for (size_t i = 0; i < block.GetRowCount(); ++i) {
-                std::cout << block[0]->As<ColumnDateTime>()->At(i) << " ";
-                for(size_t j = 1; j < block.GetColumnCount(); ++j){
-                    std::cout << block[j]->As<ColumnFloat64>()->At(i) << " ";
-                }
-                std::cout << std::endl;
+          double res = getElapsedTime(desc);
+          if(block.GetRowCount()==0 && block.GetColumnCount()==0){
+            if(time_inside.count(desc) == 1){
+              time_inside[desc] += res;
+            } else {
+              time_inside[desc] = res;
             }
+          }
+          // std::cout << "block(" << block.GetRowCount() << ", " << block.GetColumnCount() << ")" << std::endl;
+          // std::cout << res << "s" << std::endl; 
+          // for (size_t i = 0; i < block.GetRowCount(); ++i) {
+          //     std::cout << block[0]->As<ColumnDateTime>()->At(i) << " ";
+          //     for(size_t j = 1; j < block.GetColumnCount(); ++j){
+          //         std::cout << block[j]->As<ColumnFloat64>()->At(i) << " ";
+          //     }
+          //     std::cout << std::endl;
+          // }
         }
     );
-    double res = getElapsedTime(desc);
-    if(time_inside.count(desc) == 1){
-      time_inside[desc] += res;
-    } else {
-      time_inside[desc] = res;
-    }
+    
 }
 
 void Adapter::dropTable(){

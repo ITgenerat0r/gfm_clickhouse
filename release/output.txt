@@ -35,3 +35,64 @@
        5|   10000|      10|       0.141834|       0.165692|
       10|      10|       1|     0.00936607|
 insert      50c|   10000r|       1b|      0.0222548s|
+select      10c|      20r|       2b|      0.0249069s|
+select      10c|      10r|       1b|      0.0109621s|
+select       5c|      10r|       1b|      0.0107121s|
+insert      50c|      50r|       2b|      0.0221008s|
+select      10c|      10r|       2b|      0.0176829s|
+select      10c|      10r|       5b|       0.146966s|
+
+
+
+insert      50c|    1000r|      10b|      0.0605294s|
+insert       5c|   10000r|      10b|       0.165708s|
+select      50c|    1000r|      10b|        3.20028s|
+select       5c|   10000r|      10b|        6.02736s|
+select       5c|   10000r|      10b|        5.11104s|
+select      10c|      10r|       2b|       0.078519s|
+select      10c|      10r|       1b|      0.0828709s|
+insert      50c|    1000r|      10b|        0.12899s|
+insert       5c|   10000r|      10b|       0.134049s|
+select      50c|    1000r|      10b|        3.24165s|
+select       5c|   10000r|      10b|        3.02416s|
+select       5c|       5r|       2b|       0.012804s|
+select       5c|   10000r|      10b|        2.99108s|
+select      50c|    1000r|      10b|        3.44926s|
+select       5c|     100r|      10b|      0.0583146s|
+insert       5c|    1000r|     100b|       0.714978s|
+insert      50c|     100r|     100b|       0.865825s|
+select       5c|    1000r|     100b|        3.25695s|
+select      50c|     100r|     100b|        3.27193s|
+insert      10c|      10r|       1b|      0.0186741s|
+select      50c|      50r|       2b|      0.0287442s|
+insert       5c|       5r|       1b|      0.0187646s|
+insert      50c|    1000r|      10b|      0.0790506s|
+insert       5c|   10000r|      10b|       0.187127s|
+insert      50c|     100r|     100b|       0.634944s|
+insert       5c|    1000r|     100b|        1.03717s|
+select      50c|    1000r|      10b|       0.108793s|
+select       5c|   10000r|      10b|      0.0723996s|
+select      50c|     100r|     100b|       0.580198s|
+select       5c|    1000r|     100b|       0.317331s|
+
+
+
+
+
+insert      50c|    1000r|      10b|       0.116506s|
+insert       5c|   10000r|      10b|       0.231159s|
+insert      50c|     100r|     100b|        1.00316s|
+insert       5c|    1000r|     100b|        1.45346s|
+select      50c|    1000r|      10b|      0.0746472s|
+select       5c|   10000r|      10b|      0.0373134s|
+select      50c|     100r|     100b|       0.559042s|
+select       5c|    1000r|     100b|       0.285415s|
+
+insert      50c|    1000r|      10b|       0.156737s|
+insert       5c|   10000r|      10b|       0.286118s|
+insert      50c|     100r|     100b|          1.392s|
+insert       5c|    1000r|     100b|        1.95012s|
+select      50c|    1000r|      10b|      0.0645108s|
+select       5c|   10000r|      10b|      0.0397578s|
+select      50c|     100r|     100b|       0.537426s|
+select       5c|    1000r|     100b|       0.287986s|
