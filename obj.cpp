@@ -35,6 +35,18 @@ double Adapter::getElapsedTime(const std::string& desc){
 
 }
 
+
+
+void Adapter::addElapsedTime(const std::string& desc){
+  double res = getElapsedTime(desc);
+  if(time_inside.count(desc) == 1){
+    time_inside[desc] += res;
+  } else {
+    time_inside[desc] = res;
+  }
+}
+
+
 double Adapter::getAbsoluteTime(const std::string& desc){
   if (time_inside.count(desc) == 1){
     return time_inside[desc];
@@ -45,18 +57,37 @@ double Adapter::getAbsoluteTime(const std::string& desc){
 
 void Adapter::setTableName(const std::string &full_table_name){
   table_ = full_table_name;
+  std::stringstream ss(full_table_name);
+  std::getline(ss, current_database, '.');
+  ss >> current_table;
+  std::cout << "USE " << current_database << '.' << current_table << std::endl; 
 }
 
 void Adapter::createTable(){
   client->Execute("CREATE TABLE IF NOT EXISTS "+table_+" (dt DateTime, f1 Float64, f2 Float64, f3 Float64, f4 Float64, f5 Float64, f6 Float64, f7 Float64, f8 Float64, f9 Float64, f10 Float64, f11 Float64, f12 Float64, f13 Float64, f14 Float64, f15 Float64, f16 Float64, f17 Float64, f18 Float64, f19 Float64, f20 Float64, f21 Float64, f22 Float64, f23 Float64, f24 Float64, f25 Float64, f26 Float64, f27 Float64, f28 Float64, f29 Float64, f30 Float64, f31 Float64, f32 Float64, f33 Float64, f34 Float64, f35 Float64, f36 Float64, f37 Float64, f38 Float64, f39 Float64, f40 Float64, f41 Float64, f42 Float64, f43 Float64, f44 Float64, f45 Float64, f46 Float64, f47 Float64, f48 Float64, f49 Float64, f50 Float64) ENGINE = Memory");
 }
 
-void Adapter::insert(const int rows, int cols, const std::string& desc){
+
+void Adapter::addColumn(std::string column_name, std::string column_type){
+  std::string query = "ALTER TABLE "+table_+" ADD COLUMN "+column_name+" "+column_type+";";
+  std::cout << "addColumn = " << query << std::endl;
+  client->Execute(query);
+}
+
+void Adapter::deleteColumn(std::string column_name){
+  std::string query = "ALTER TABLE " + table_;
+  query +=  " DROP COLUMN " + column_name + ";";
+  std::cout << "query: " << query << std::endl;
+  client->Execute(query);
+}
+
+
+void Adapter::insert(const int rows, int cols, const std::string& desc, int offset_c){
   // std::cout << "Insert..." << std::endl;
 
   Block block;
 
-  auto fid = std::make_shared<ColumnFloat64>();
+  // auto fid = std::make_shared<ColumnFloat64>();
   auto fl = std::make_shared<ColumnFloat64>();
   auto date = std::make_shared<ColumnDateTime>();
   const int64_t c = 4'987'654'321'987'654'321;
@@ -85,7 +116,7 @@ void Adapter::insert(const int rows, int cols, const std::string& desc){
   if (cols > 50) cols = 50;
   for (int i = 1; i <= cols; i++){
     std::stringstream ss;
-    ss << i;
+    ss << i + offset_c;
     std::string field = "f"+ss.str();
     block.AppendColumn(field, fl);
   }
@@ -100,15 +131,15 @@ void Adapter::insert(const int rows, int cols, const std::string& desc){
   }
 }
 
-void Adapter::select(const int tab_count, const int limit, const int offset, const std::string& desc){
+void Adapter::select(const int tab_count, const int limit, const int offset_r, const std::string& desc, int offset_c){
   // std::cout << "Select..." << std::endl;
     std::string tabs = "*";
     if(tab_count > 1) tabs = "dt";
     for(int it = 1; it <= tab_count; it++){
-      tabs += ", f" + std::to_string(it);
+      tabs += ", f" + std::to_string(it + offset_c);
     }
 
-    std::string querys = "SELECT " + tabs + " FROM " + table_ + " LIMIT " + std::to_string(limit) + " OFFSET " + std::to_string(offset * limit);
+    std::string querys = "SELECT " + tabs + " FROM " + table_ + " LIMIT " + std::to_string(limit) + " OFFSET " + std::to_string(offset_r * limit);
     resetTime(desc);
     // std::cout << "Query: " << querys << std::endl;
     client->Select(querys, [&] (const Block& block)
@@ -133,6 +164,64 @@ void Adapter::select(const int tab_count, const int limit, const int offset, con
         }
     );
     
+}
+
+
+uint64_t Adapter::GetColumnCount(){
+  std::string querys = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_catalog = '"+current_database+"' AND table_name = '"+current_table+"'";
+
+  uint64_t res = 0;
+  client->Select(querys, [&](const Block& block)
+   {
+    // std::cout << std::endl << "GetColumnCount" << std::endl;
+    // std::cout << "block(" << block.GetRowCount() << ", " << block.GetColumnCount() << ")" << std::endl;
+    try {
+      if(block.GetRowCount() > 0 && block.GetColumnCount() > 0){
+        for (size_t i = 0; i < block.GetRowCount(); ++i) {
+            // std::cout << block[0]->As<ColumnDateTime>()->At(i) << " ";
+            for(size_t j = 0; j < block.GetColumnCount(); ++j){
+                // std::cout << block[j]->GetType().GetName() << " ";
+              // std::cout << block[j]->As<ColumnUInt64>()->At(i) << " ";
+              res = block[j]->As<ColumnUInt64>()->At(i);
+            }
+            // std::cout << std::endl;
+        }
+      }
+    } catch (const std::exception& ex){
+      std::cout << "Exception: " << ex.what() << std::endl;
+    }
+   }
+   );
+  return res;
+}
+
+
+uint64_t Adapter::GetRowCount(){
+  std::string querys = "SELECT COUNT(*) FROM " + table_;
+
+  uint64_t res = 0;
+  client->Select(querys, [&](const Block& block)
+   {
+    // std::cout << std::endl << "GetColumnCount" << std::endl;
+    // std::cout << "block(" << block.GetRowCount() << ", " << block.GetColumnCount() << ")" << std::endl;
+    try {
+      if(block.GetRowCount() > 0 && block.GetColumnCount() > 0){
+        for (size_t i = 0; i < block.GetRowCount(); ++i) {
+            // std::cout << block[0]->As<ColumnDateTime>()->At(i) << " ";
+            for(size_t j = 0; j < block.GetColumnCount(); ++j){
+                // std::cout << block[j]->GetType().GetName() << " ";
+              // std::cout << block[j]->As<ColumnUInt64>()->At(i) << " ";
+              res = block[j]->As<ColumnUInt64>()->At(i);
+            }
+            // std::cout << std::endl;
+        }
+      }
+    } catch (const std::exception& ex){
+      std::cout << "Exception: " << ex.what() << std::endl;
+    }
+   }
+   );
+  return res;
 }
 
 void Adapter::dropTable(){

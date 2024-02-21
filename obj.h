@@ -32,20 +32,32 @@ public:
 
 	void createTable();
 
-	void insert(const int rows, int cols, const std::string& desc);
+	void addColumn(std::string column_name, std::string column_type);
 
-	void select(const int tab_count, const int limit, const int offset, const std::string& desc);
+	void deleteColumn(std::string column_name);
+
+	void insert(const int rows, int cols, const std::string& desc, int offset_c);
+
+	void select(const int tab_count, const int limit, const int offset_r, const std::string& desc, int offset_c);
 
 	void dropTable();
+
+	uint64_t GetColumnCount();
+
+	uint64_t GetRowCount();
 
 	void resetTime(const std::string& desc);
 
 	double getElapsedTime(const std::string& desc);
 
+	void addElapsedTime(const std::string& desc);
+
 	double getAbsoluteTime(const std::string& desc);
 
 private:
 	std::string table_;
+	std::string current_database;
+	std::string current_table;
 	const std::string host_;
 	const std::string user_;
 	const std::string pass_;

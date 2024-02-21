@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     adapter.createTable();
 
-    int b, c, r;
+    int b, c, r, offset = 0;
     if (argc > 1){
         std::stringstream ss;
         ss << argv[1];
@@ -61,14 +61,20 @@ int main(int argc, char *argv[])
         std::cout << "How many blocks? ";
         std::cin >> b;
     }
+    if (argc > 4){
+        std::stringstream ss;
+        ss << argv[4];
+        ss >> offset;
+    }
     std::cout << "Columns: " << c << std::endl;
     std::cout << "Rows: " << r << std::endl;
     std::cout << "Blocks: " << b << std::endl;
+    std::cout << "Offset: " << offset << std::endl;
 
     std::string kc = "Insert";
 
     for(int ib=0; ib<b; ib++){
-        adapter.insert(r, c, kc);
+        adapter.insert(r, c, kc, offset);
     }
 
     // double res = adapter.getElapsedTime(kc);
