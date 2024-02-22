@@ -63,8 +63,22 @@ void Adapter::setTableName(const std::string &full_table_name){
   std::cout << "USE " << current_database << '.' << current_table << std::endl; 
 }
 
+void Adapter::createDatabase(){
+  client->Execute("CREATE DATABASE IF NOT EXISTS test ENGINE = Atomic;");
+}
+
+void Adapter::dropDatabase(){
+  client->Execute("DROP DATABASE test;");
+}
+
 void Adapter::createTable(){
-  client->Execute("CREATE TABLE IF NOT EXISTS "+table_+" (dt DateTime, f1 Float64, f2 Float64, f3 Float64, f4 Float64, f5 Float64, f6 Float64, f7 Float64, f8 Float64, f9 Float64, f10 Float64, f11 Float64, f12 Float64, f13 Float64, f14 Float64, f15 Float64, f16 Float64, f17 Float64, f18 Float64, f19 Float64, f20 Float64, f21 Float64, f22 Float64, f23 Float64, f24 Float64, f25 Float64, f26 Float64, f27 Float64, f28 Float64, f29 Float64, f30 Float64, f31 Float64, f32 Float64, f33 Float64, f34 Float64, f35 Float64, f36 Float64, f37 Float64, f38 Float64, f39 Float64, f40 Float64, f41 Float64, f42 Float64, f43 Float64, f44 Float64, f45 Float64, f46 Float64, f47 Float64, f48 Float64, f49 Float64, f50 Float64) ENGINE = Memory");
+  client->Execute("CREATE TABLE IF NOT EXISTS "+table_+" (dt DateTime, f1 Float64, f2 Float64, f3 Float64, f4 Float64, f5 Float64, f6 Float64, f7 Float64, f8 Float64, f9 Float64, f10 Float64, f11 Float64, f12 Float64, f13 Float64, f14 Float64, f15 Float64, f16 Float64, f17 Float64, f18 Float64, f19 Float64, f20 Float64, f21 Float64, f22 Float64, f23 Float64, f24 Float64, f25 Float64, f26 Float64, f27 Float64, f28 Float64, f29 Float64, f30 Float64, f31 Float64, f32 Float64, f33 Float64, f34 Float64, f35 Float64, f36 Float64, f37 Float64, f38 Float64, f39 Float64, f40 Float64, f41 Float64, f42 Float64, f43 Float64, f44 Float64, f45 Float64, f46 Float64, f47 Float64, f48 Float64, f49 Float64, f50 Float64) ENGINE = MergeTree() ORDER BY (dt);");
+}
+
+
+
+void Adapter::Execute(const std::string& command){
+  client->Execute(command);
 }
 
 

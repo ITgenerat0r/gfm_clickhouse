@@ -28,6 +28,10 @@ public:
 		last_time = std::time(0);
 	}
 
+	void createDatabase();
+
+	void dropDatabase();
+
 	void setTableName(const std::string &full_table_name);
 
 	void createTable();
@@ -53,6 +57,8 @@ public:
 	void addElapsedTime(const std::string& desc);
 
 	double getAbsoluteTime(const std::string& desc);
+
+	void Execute(const std::string& command);
 
 private:
 	std::string table_;

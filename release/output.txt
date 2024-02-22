@@ -32,3 +32,20 @@ select      50c|     100r|     100b|       0.551842s|
 select      25c|     500r|     100b|       0.531801s|
 select      25c|     200r|     100b|       0.368333s|
 select      49c|     100r|     100b|       0.506196s|
+
+
+insert     100c|    1000r|      10b|       0.165355s|
+insert     100c|    1000r|      10b|       0.157467s|
+insert     100c|    1000r|      10b|       0.152424s|
+insert     100c|   10000r|      10b|       0.332023s|
+insert     100c|   10000r|     100b|        2.83291s|
+
+
+insert      50c|    1000r|      10b|       0.107149s|
+insert       5c|   10000r|      10b|       0.262832s|
+insert      50c|     100r|     100b|       0.993559s|
+insert       5c|    1000r|     100b|        1.11394s|
+select      50c|    1000r|      10b|        0.34592s|
+select       5c|   10000r|      10b|       0.122196s|
+select      50c|     100r|     100b|        1.65194s|
+select       5c|    1000r|     100b|       0.655753s|
