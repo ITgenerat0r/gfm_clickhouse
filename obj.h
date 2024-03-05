@@ -5,6 +5,7 @@
 #include <chrono>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 #include "clickhouse/client.h"
 using namespace clickhouse;
@@ -13,7 +14,14 @@ using namespace clickhouse;
 using time_type = std::chrono::time_point<std::chrono::system_clock>;
 
 
-
+class init_reader {
+public:
+	void read_file(std::string filename);
+	std::string get(std::string key);
+	int size();
+private:
+	std::map<std::string, std::string> data;
+};
 
 
 class Adapter {

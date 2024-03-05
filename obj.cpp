@@ -3,6 +3,47 @@
 
 
 
+void init_reader::read_file(std::string filename){
+  data.clear();
+
+  std::ifstream initf(filename);
+  while (initf.is_open())
+  {
+      std::string key, value;
+      initf >> key;
+      initf >> value;
+      std::cout << key << ":" << value << std::endl;
+      if (value == "") break;
+      data[key] = value;
+  }
+}
+
+
+std::string init_reader::get(std::string key){
+  if (data.count(key) == 1){
+    return data[key];
+  }
+  return "";
+}
+
+
+
+int init_reader::size(){
+  return data.size();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Adapter::Adapter(const std::string &host, const std::string &user, const std::string &pass): host_(host), user_(user), pass_(pass){
 //   options_.SetHost(host_);
 //   options_.SetUser(user_);

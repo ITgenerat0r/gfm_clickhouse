@@ -1,8 +1,6 @@
 #include <iostream>
 #include <ctime>
 #include <chrono>
-#include <string>
-#include <fstream>
 #include <iomanip>
 
 
@@ -15,12 +13,26 @@ using namespace clickhouse;
 
 int main(int argc, char *argv[])
 {
-    const std::string version = "v1.0";
-    const std::string output_file = "output.txt";
-    const std::string db_nm = "test";
-    const std::string tb_nm = "uso";
+    const std::string version = "v1.1";
+
+
+
+
+    init_reader ir;
+    ir.read_file("db.config");
+
+    std::string host = ir.get("host");
+    std::string user = ir.get("username");
+    std::string pass = "";
+    std::string output_file = ir.get("output_file");
+    std::string db_nm = ir.get("database");
+    std::string tb_nm = ir.get("table");
     const std::string ft_nm = db_nm + "." + tb_nm;
 
+    
+    std::cout << "Password for " << user << "('-' for skip): ";
+    std::cin >> pass;
+    if (pass == "-") pass = "";
 
 
     /// Initialize client connection.
@@ -30,7 +42,7 @@ int main(int argc, char *argv[])
     // options.SetPassword(PASS);
 
     // Adapter adapter(options);
-    Adapter adapter(HOST, USER, PASS);
+    Adapter adapter(host, user, pass);
 
 
     adapter.setTableName(ft_nm);
