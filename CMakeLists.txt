@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(clickhouse-cpp)
 
-add_executable(${PROJECT_NAME} "count.cpp" "obj.cpp")
+add_executable(${PROJECT_NAME} "app.cpp" "obj.cpp")
 
 target_include_directories(${PROJECT_NAME} PRIVATE clickhouse-cpp/ clickhouse-cpp/contrib/absl)
 
